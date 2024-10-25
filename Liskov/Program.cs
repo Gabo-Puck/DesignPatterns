@@ -50,7 +50,7 @@
         Now, using new keyword in this context violates the Liskov Substitution Principle. 
         Why...?
         Well, this principle says that a base class (Reactangle) should be able to be replaced by a subtype class (Square)
-        and should still behave as the subtype class
+        and should still behave as the subtype class, but in this cases both setters have a very different functionality
         */
         public override int Width
         {
