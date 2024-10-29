@@ -30,7 +30,6 @@ public class Program
                     sb.Append(' ', indentationLevel * indentationSpaces + 1);
                     sb.AppendLine(Text);
                 }
-
                 elements.ForEach(e => sb.AppendLine(e.ToStringImp(indentationLevel + 1)));
             sb.AppendLine($"{indent}</{Name}>");
             return sb.ToString();
