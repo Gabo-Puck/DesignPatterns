@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.Http.Headers;
+using System.Text;
 
 public class Program
 {
@@ -26,11 +27,12 @@ public class Program
             var sb = new StringBuilder();
             var indent = new string(' ', indentationLevel * indentationSpaces);
             sb.AppendLine($"{indent}<{Name}>");
-                if (!string.IsNullOrEmpty(Text)) { 
-                    sb.Append(' ', indentationLevel * indentationSpaces + 1);
-                    sb.AppendLine(Text);
-                }
-                elements.ForEach(e => sb.AppendLine(e.ToStringImp(indentationLevel + 1)));
+            if (!string.IsNullOrEmpty(Text))
+            {
+                sb.Append(' ', indentationLevel * indentationSpaces + 1);
+                sb.AppendLine(Text);
+            }
+            elements.ForEach(e => sb.AppendLine(e.ToStringImp(indentationLevel + 1)));
             sb.AppendLine($"{indent}</{Name}>");
             return sb.ToString();
         }
@@ -50,10 +52,19 @@ public class Program
             rootElement.Name = name;
         }
 
-        public void AddHtmlElement(string childName, string childText)
+        public HtmlBuilder AddHtmlElement(string childName, string childText)
         {
             var htmlElement = new HtmlElement(childName, childText);
             rootElement.elements.Add(htmlElement);
+            return this;
+        }
+
+        public HtmlBuilder AddHtmlElement(HtmlBuilder builder)
+        {
+            var htmlElement = new HtmlElement(builder.rootElement.Name, builder.rootElement.Text);
+            htmlElement.elements.AddRange(builder.rootElement.elements);
+            rootElement.elements.Add(htmlElement);
+            return this;
         }
 
         public override string ToString()
@@ -64,19 +75,20 @@ public class Program
 
     public static void Main(string[] args)
     {
-        var sb = new StringBuilder();
-        sb.Append("<p>").Append("Hello word");
-        sb.Append("</p>");
-        Console.WriteLine(sb);
-        sb.Clear();
-        var texts = new List<string>() { "Hello", "World" };
-        sb.Append("<ul>");
-        texts.ForEach(t => sb.Append($"<li>{t}</li>"));
-        sb.Append("</ul>");
-        Console.WriteLine(sb);
+        // var sb = new StringBuilder();
+        // sb.Append("<p>").Append("Hello word");
+        // sb.Append("</p>");
+        // Console.WriteLine(sb);
+        // sb.Clear();
+        // var texts = new List<string>() { "Hello", "World" };
+        // sb.Append("<ul>");
+        // texts.ForEach(t => sb.Append($"<li>{t}</li>"));
+        // sb.Append("</ul>");
+        // Console.WriteLine(sb);
         var htmlBuilder = new HtmlBuilder("li");
-        htmlBuilder.AddHtmlElement("li", "Hello");
-        htmlBuilder.AddHtmlElement("li", "world!");
-        Console.WriteLine(htmlBuilder);
+        htmlBuilder.AddHtmlElement("li", "Hello").AddHtmlElement("li", "world!");
+        var htmlBuilder2 = new HtmlBuilder("li");
+        htmlBuilder2.AddHtmlElement("li", "Hello").AddHtmlElement(htmlBuilder);
+        Console.WriteLine(htmlBuilder2);
     }
 }
